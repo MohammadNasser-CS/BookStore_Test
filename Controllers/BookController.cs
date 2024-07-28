@@ -5,6 +5,7 @@ using ApiExample.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiExample.Controllers
 {
@@ -18,16 +19,17 @@ namespace ApiExample.Controllers
             this.context = context;
         }
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var books = context.Books.ToList();
-            // var books = context.Books.ToList().Select(S => S.ToBookDto());
+            // var books = await context.Books.ToListAsync();
+            var books = await context.Books.ToListAsync();
+            var booksDto = books.Select(S => S.ToBookDto());
             return Ok(new { books = books });
         }
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var book = context.Books.Find(id);
+            var book = await context.Books.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
@@ -35,31 +37,31 @@ namespace ApiExample.Controllers
             return Ok(new { book = book.ToBookDto() });
         }
         [HttpPost]
-        public IActionResult Create([FromBody] CreateBookRequestDto createBook)
+        public async Task<IActionResult> Create([FromBody] CreateBookRequestDto createBook)
         {
             var bookModel = createBook.CreateBookDto();
-            context.Books.Add(bookModel);
-            context.SaveChanges();
+            await context.Books.AddAsync(bookModel);
+            await context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new { id = bookModel.BookId }, bookModel.ToBookDto());
         }
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateBookRequestDto updateBookRequest)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateBookRequestDto updateBookRequest)
         {
-            var bookModel = context.Books.FirstOrDefault(B => B.BookId == id);
+            var bookModel = await context.Books.FirstOrDefaultAsync(B => B.BookId == id);
             if (bookModel == null) return NotFound();
             bookModel.Title = updateBookRequest.Title;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             return Ok(bookModel);
         }
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var bookModel = context.Books.FirstOrDefault(B => B.BookId == id);
+            var bookModel = await context.Books.FirstOrDefaultAsync(B => B.BookId == id);
             if (bookModel == null) return NotFound();
             context.Books.Remove(bookModel);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             return NoContent();
         }
     }
