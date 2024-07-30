@@ -23,6 +23,8 @@ namespace ApiExample.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var categories = await categoryRepository.GetAllAsync();
             var categoryDtos = categories.Select(C => C.ToCategoryDto());
             return Ok(new { Categories = categoryDtos });
@@ -31,6 +33,8 @@ namespace ApiExample.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var category = await categoryRepository.GetByIdAsync(id);
             if (category == null) return NotFound();
             return Ok(new { Category = category });
@@ -38,6 +42,8 @@ namespace ApiExample.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCategoryRequestDto createCategory)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var categoryModel = createCategory.CreateCategoryDto();
             await categoryRepository.CreateAsync(categoryModel);
             return CreatedAtAction(nameof(GetById), new { id = categoryModel.Id }, categoryModel.ToCategoryDto());
@@ -46,15 +52,19 @@ namespace ApiExample.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryRequestDto updateCategoryRequest)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var categoryModel = await categoryRepository.UpdateAsync(id, updateCategoryRequest);
             if (categoryModel == null) return NotFound();
 
-            return Ok(categoryModel);
+            return CreatedAtAction(nameof(GetById), new { id = categoryModel.Id }, categoryModel.ToCategoryDto()); ;
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var categoryModel = await categoryRepository.DeleteAsyny(id);
             if (categoryModel == null) return NotFound();
             return NoContent();

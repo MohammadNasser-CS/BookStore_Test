@@ -25,13 +25,17 @@ namespace ApiExample.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var books = await bookRepository.GetAllAsync();
             var booksDto = books.Select(S => S.ToBookDto());
             return Ok(new { books = booksDto });
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var book = await bookRepository.GetByIdAsync(id);
             if (book == null)
             {
@@ -39,9 +43,11 @@ namespace ApiExample.Controllers
             }
             return Ok(new { book = book.ToBookDto() });
         }
-        [HttpPost("{categoryId}")]
+        [HttpPost("{categoryId:int}")]
         public async Task<IActionResult> Create([FromRoute] int categoryId, [FromBody] CreateBookRequestDto createBook)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             if (!await categoryRepository.CategoryExists(categoryId))
             {
                 return BadRequest("Category Does Not Exist");
@@ -51,18 +57,22 @@ namespace ApiExample.Controllers
             return CreatedAtAction(nameof(GetById), new { id = bookModel.BookId }, bookModel.ToBookDto());
         }
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateBookRequestDto updateBookRequest)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var bookModel = await bookRepository.UpdateAsync(id, updateBookRequest);
             if (bookModel == null) return NotFound();
 
             return Ok(bookModel);
         }
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var bookModel = await bookRepository.DeleteAsyny(id);
             if (bookModel == null) return NotFound();
             return NoContent();
