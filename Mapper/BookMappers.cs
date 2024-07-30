@@ -14,13 +14,29 @@ namespace ApiExample.Mapper
             return new BookDto
             {
                 Title = book.Title,
+                Description=book.Description,
+                Price=book.Price,
             };
         }
-        public static Book CreateBookDto(this CreateBookRequestDto createBookRequest)
+        public static Book CreateBookDto(this CreateBookRequestDto createBookRequest, int CategoryId)
         {
             return new Book
             {
                 Title = createBookRequest.Title,
+                Description = createBookRequest.Description,
+                Price = createBookRequest.Price,
+                CatId = CategoryId,
+            };
+        }
+
+        public static Book UpdateBookDto(this CreateBookRequestDto createBookRequest, int CategoryId)
+        {
+            return new Book
+            {
+                Title = createBookRequest.Title,
+                Description = createBookRequest.Description,
+                Price = createBookRequest.Price,
+                CatId = CategoryId,
             };
         }
     }

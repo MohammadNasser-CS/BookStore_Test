@@ -1,7 +1,9 @@
 ﻿using ApiExample.Data;
 using ApiExample.Dtos.Book;
+using ApiExample.Interfaces;
 using ApiExample.Mapper;
 using ApiExample.Models;
+using ApiExample.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -13,55 +15,56 @@ namespace ApiExample.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly BookStoreApiContext context;
-        public BookController(BookStoreApiContext context)
+        private readonly IBookRepository bookRepository;
+        private readonly ICategoryRepository categoryRepository;
+        public BookController(IBookRepository bookRepository, ICategoryRepository categoryRepository)
         {
-            this.context = context;
+            this.categoryRepository = categoryRepository;
+            this.bookRepository = bookRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            // var books = await context.Books.ToListAsync();
-            var books = await context.Books.ToListAsync();
+            var books = await bookRepository.GetAllAsync();
             var booksDto = books.Select(S => S.ToBookDto());
-            return Ok(new { books = books });
+            return Ok(new { books = booksDto });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var book = await context.Books.FindAsync(id);
+            var book = await bookRepository.GetByIdAsync(id);
             if (book == null)
             {
                 return NotFound();
             }
             return Ok(new { book = book.ToBookDto() });
         }
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateBookRequestDto createBook)
+        [HttpPost("{categoryId}")]
+        public async Task<IActionResult> Create([FromRoute] int categoryId, [FromBody] CreateBookRequestDto createBook)
         {
-            var bookModel = createBook.CreateBookDto();
-            await context.Books.AddAsync(bookModel);
-            await context.SaveChangesAsync();
+            if (!await categoryRepository.CategoryExists(categoryId))
+            {
+                return BadRequest("Category Does Not Exist");
+            }
+            var bookModel = createBook.CreateBookDto(categoryId);
+            await bookRepository.CreateAsync(bookModel);
             return CreatedAtAction(nameof(GetById), new { id = bookModel.BookId }, bookModel.ToBookDto());
         }
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateBookRequestDto updateBookRequest)
         {
-            var bookModel = await context.Books.FirstOrDefaultAsync(B => B.BookId == id);
+            var bookModel = await bookRepository.UpdateAsync(id, updateBookRequest);
             if (bookModel == null) return NotFound();
-            bookModel.Title = updateBookRequest.Title;
-            await context.SaveChangesAsync();
+
             return Ok(bookModel);
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var bookModel = await context.Books.FirstOrDefaultAsync(B => B.BookId == id);
+            var bookModel = await bookRepository.DeleteAsyny(id);
             if (bookModel == null) return NotFound();
-            context.Books.Remove(bookModel);
-            await context.SaveChangesAsync();
             return NoContent();
         }
     }

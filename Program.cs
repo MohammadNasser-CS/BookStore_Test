@@ -1,5 +1,7 @@
 
 using ApiExample.Data;
+using ApiExample.Interfaces;
+using ApiExample.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiExample
@@ -20,8 +22,13 @@ namespace ApiExample
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             var app = builder.Build();
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
