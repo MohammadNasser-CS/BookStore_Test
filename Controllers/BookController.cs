@@ -1,5 +1,6 @@
 ﻿using ApiExample.Data;
 using ApiExample.Dtos.Book;
+using ApiExample.Helpers;
 using ApiExample.Interfaces;
 using ApiExample.Mapper;
 using ApiExample.Models;
@@ -23,11 +24,11 @@ namespace ApiExample.Controllers
             this.bookRepository = bookRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] BookQueryObject query)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var books = await bookRepository.GetAllAsync();
+            var books = await bookRepository.GetAllAsync(query);
             var booksDto = books.Select(S => S.ToBookDto());
             return Ok(new { books = booksDto });
         }

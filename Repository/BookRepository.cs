@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiExample.Data;
 using ApiExample.Dtos.Book;
+using ApiExample.Helpers;
 using ApiExample.Interfaces;
 using ApiExample.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,27 @@ namespace ApiExample.Repository
         {
             this.context = context;
         }
-        public async Task<List<Book>> GetAllAsync()
+        public async Task<List<Book>> GetAllAsync(BookQueryObject query)
         {
-            return await context.Books.ToListAsync();
+            var books = context.Books.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                books = books.Where(B => B.Title.Contains(query.Title));
+            }
+            if (!string.IsNullOrWhiteSpace(query.Category))
+            {
+                books = books.Where(B => B.Category.Name.Contains(query.Category));
+            }
+            if (query.Price != null)
+            {
+                books = books.Where(B => B.Price.Equals(query.Price));
+            }
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                books = query.IsDesc ? books.OrderByDescending(B => B.Price) : books.OrderBy(B => B.Price);
+            }
+            int skipSize = (query.PageNumber - 1) * query.PageSize;
+            return await books.Skip(skipSize).Take(query.PageSize).ToListAsync();
         }
         public async Task<Book?> GetByIdAsync(int id)
         {
