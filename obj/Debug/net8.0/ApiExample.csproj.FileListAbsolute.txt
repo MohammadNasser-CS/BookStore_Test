@@ -140,3 +140,10 @@ D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
 D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\Projects\C#\ApiExample\bin\Debug\net8.0\Newtonsoft.Json.dll
 D:\Projects\C#\ApiExample\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
+D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+D:\Projects\C#\ApiExample\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
