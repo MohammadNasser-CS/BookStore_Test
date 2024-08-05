@@ -3,6 +3,7 @@ using ApiExample.Data;
 using ApiExample.Interfaces;
 using ApiExample.Models;
 using ApiExample.Repository;
+using ApiExample.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ namespace ApiExample
             });
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
+            builder.Services.AddScoped<ITokenServices,TokenServices>();
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiExample.Dtos.Account;
+using ApiExample.Interfaces;
 using ApiExample.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,12 @@ namespace ApiExample.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> userManager;
+        private readonly ITokenServices tokenServices;
 
-        public AccountController(UserManager<User> userManager)
+        public AccountController(UserManager<User> userManager, ITokenServices tokenServices)
         {
             this.userManager = userManager;
+            this.tokenServices = tokenServices;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
@@ -45,6 +48,7 @@ namespace ApiExample.Controllers
                                 Message = "User created!",
                                 UserName = user.UserName,
                                 Email = user.Email,
+                                Token = tokenServices.createToken(user),
                             }
                         );
                     }
