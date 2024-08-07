@@ -26,16 +26,17 @@ namespace ApiExample.Services
                 new Claim(JwtRegisteredClaimNames.Email,user.Email!),
                 new Claim(JwtRegisteredClaimNames.GivenName,user.UserName!),
             };
-            var credentials=new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
-            var tokenDescriptor= new SecurityTokenDescriptor{
-                Subject=new ClaimsIdentity(claims),
-                Expires=DateTime.Now.AddDays(7),
-                SigningCredentials=credentials,
-                Issuer=_config["JWT:Issuer"],
-                Audience=_config["JWT:Audience"],
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(7),
+                SigningCredentials = credentials,
+                Issuer = _config["JWT:Issuer"],
+                Audience = _config["JWT:Audience"],
             };
-            var tokenHandler=new JwtSecurityTokenHandler();
-            var token=tokenHandler.CreateToken(tokenDescriptor);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
     }
