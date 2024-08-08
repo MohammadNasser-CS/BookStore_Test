@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 namespace ApiExample.Models
 {
+  [Table("Books")]
   public class Book
   {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)] // BookId --> is a Primary Key, is Identity (auto incrementing by 1).
@@ -20,6 +21,8 @@ namespace ApiExample.Models
     public int CatId { get; set; } // By Convention --> Foreign Key. 'ClassNameId'
     [InverseProperty("Books"), AllowNull, DeleteBehavior(DeleteBehavior.Restrict)]
     public virtual Category Category { get; set; } // Navegational Property: 1.
+    [InverseProperty("Book")]
+    public virtual ICollection<UserBook> UserBooks { get; set; }=new List<UserBook>();
   }
 
 

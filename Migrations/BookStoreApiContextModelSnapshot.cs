@@ -134,6 +134,21 @@ namespace ApiExample.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ApiExample.Models.UserBook", b =>
+                {
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("BookId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserBooks");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -163,13 +178,13 @@ namespace ApiExample.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "42d23fab-38c9-4463-bd7f-e239e667fba7",
+                            Id = "1d4ca011-574b-49d6-baf1-5379c7180556",
                             Name = "Author",
                             NormalizedName = "AUTHOR"
                         },
                         new
                         {
-                            Id = "623f798e-7266-4259-a638-56f318efec33",
+                            Id = "1f9955ec-a8bd-451a-aa6a-56a43b9f91a9",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -292,6 +307,25 @@ namespace ApiExample.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("ApiExample.Models.UserBook", b =>
+                {
+                    b.HasOne("ApiExample.Models.Book", "Book")
+                        .WithMany("UserBooks")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApiExample.Models.User", "User")
+                        .WithMany("UserBooks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -343,9 +377,19 @@ namespace ApiExample.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ApiExample.Models.Book", b =>
+                {
+                    b.Navigation("UserBooks");
+                });
+
             modelBuilder.Entity("ApiExample.Models.Category", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("ApiExample.Models.User", b =>
+                {
+                    b.Navigation("UserBooks");
                 });
 #pragma warning restore 612, 618
         }

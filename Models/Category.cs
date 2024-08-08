@@ -2,6 +2,7 @@
 
 namespace ApiExample.Models
 {
+    [Table("Categories")]
     public class Category
     {
         public int Id { get; set; }
