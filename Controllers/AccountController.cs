@@ -75,8 +75,8 @@ namespace ApiExample.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var user = await _userManager.Users.FirstOrDefaultAsync(U => U.UserName!.ToLower() == loginDto.UserName!.ToLower());
-            if (user == null) return Unauthorized("Invalid UserName");
+            var user = await _userManager.Users.FirstOrDefaultAsync(U => U.Email == loginDto.Email);
+            if (user == null) return Unauthorized("Invalid Email");
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password!, false);
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
             return Ok(

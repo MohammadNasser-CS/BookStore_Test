@@ -62,6 +62,7 @@ namespace ApiExample
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ITokenServices, TokenServices>();
+            builder.Services.AddScoped<IUserBookRepository, UserBookRepository>();
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;

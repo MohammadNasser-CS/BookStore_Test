@@ -14,8 +14,9 @@ namespace ApiExample.Mapper
             return new BookDto
             {
                 Title = book.Title,
-                Description=book.Description,
-                Price=book.Price,
+                Description = book.Description,
+                Price = book.Price,
+                CategoryName = book.Category.Name,
             };
         }
         public static Book CreateBookDto(this CreateBookRequestDto createBookRequest, int CategoryId)

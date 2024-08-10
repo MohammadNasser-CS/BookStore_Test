@@ -10,6 +10,7 @@ namespace ApiExample.Dtos.Book
     {
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string CategoryName { get; set; } = String.Empty;
         public double Price { get; set; }
     }
 }
